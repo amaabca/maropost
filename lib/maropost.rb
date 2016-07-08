@@ -1,5 +1,5 @@
+require "rest_client"
 require "maropost/version"
-
-module Maropost
-  # Your code goes here...
-end
+require "maropost/configuration"
+require "maropost/api"
+require "maropost/contact"
