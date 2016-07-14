@@ -5,7 +5,8 @@ module Maropost
     attr_accessor :id, :email,
       :travel_weekly, :enews, :travel_especials, :ins_enews, :deals_discounts, :new_member_series, :fleet_contact,
       :personal_vehicle_reminder, :business_vehicle_reminder, :associate_vehicle_reminder,
-      :vr_reminder_email, :vr_reminder_sms, :vr_reminder_autocall
+      :vr_reminder_email, :vr_reminder_sms, :vr_reminder_autocall,
+      :phone_number, :cell_phone_number
 
     def self.find(email)
       response = Maropost::Api.new(data: { email: email }).find
@@ -61,7 +62,9 @@ module Maropost
         associate_vehicle_reminder: contact["associate_vehicle_reminder"] || "",
         vr_reminder_email: contact["ama_vr_reminder_email"] || "0",
         vr_reminder_sms: contact["ama_vr_reminder_sms"] || "0",
-        vr_reminder_autocall: contact["ama_vr_reminder_autocall"] || "0"
+        vr_reminder_autocall: contact["ama_vr_reminder_autocall"] || "0",
+        phone_number: contact["phone_number"] || "",
+        cell_phone_number: contact["cell_phone_number"] || ""
       )
     end
 
@@ -81,7 +84,9 @@ module Maropost
         business_vehicle_reminder: business_vehicle_reminder,
         ama_vr_reminder_autocall: vr_reminder_autocall,
         ama_vr_reminder_email: vr_reminder_email,
-        ama_vr_reminder_sms: vr_reminder_sms
+        ama_vr_reminder_sms: vr_reminder_sms,
+        phone_number: phone_number,
+        cell_phone_number: cell_phone_number
       }
     end
 
