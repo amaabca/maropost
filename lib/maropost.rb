@@ -1,3 +1,4 @@
+require 'active_model'
 require "rest_client"
 require "maropost/version"
 require "maropost/configuration"

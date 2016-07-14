@@ -76,7 +76,6 @@ describe Maropost::Contact do
 
         it "returns the contact record" do
           result = subject.create_or_update
-
           expect(result).to be_a Maropost::Contact
           expect(result.email).to eq email
           expect(result.travel_especials).to eq opt_in
@@ -117,7 +116,6 @@ describe Maropost::Contact do
 
         it "returns the contact record" do
           result = subject.create_or_update
-
           expect(result).to be_a Maropost::Contact
           expect(result.email).to eq email
           expect(result.travel_especials).to eq opt_in
@@ -165,7 +163,6 @@ describe Maropost::Contact do
 
       it "returns the contact record" do
         result = subject.update_email(new_email)
-
         expect(result).to be_a Maropost::Contact
         expect(result.email).to eq new_email
         expect(result.errors).to_not be_present
@@ -178,7 +175,6 @@ describe Maropost::Contact do
 
       it "returns a contact record with errors" do
         result = subject.update_email(new_email)
-
         expect(result).to be_a Maropost::Contact
         expect(result.email).to eq new_email
         expect(result.errors[:base].first).to eq "Unable to update email to #{new_email}"

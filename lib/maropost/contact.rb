@@ -1,5 +1,3 @@
-require 'active_model'
-
 module Maropost
   class Contact
     include ActiveModel::Model
