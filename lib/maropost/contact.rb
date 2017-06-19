@@ -23,7 +23,7 @@ module Maropost
       response = exists? ? api.update : api.create
       contact = JSON.parse response
       self.class.build contact
-    rescue RestClient::UnprocessableEntity => e
+    rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
       self.tap do |contact|
         contact.errors.add :base, "Unable to create or update contact"
       end
