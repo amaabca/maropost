@@ -29,6 +29,17 @@ module Maropost
       end
     end
 
+    def list_create_or_update
+      api = Maropost::Api.new(data: contact_data)
+      response = api.subscribe_to_list
+      contact = JSON.parse response
+      self.class.build contact
+    rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
+      self.tap do |contact|
+        contact.errors.add :base, "Unable to create or update contact"
+      end
+    end
+
     def update_email(new_email)
       response = Maropost::Api.new(data: { email: new_email, id: id }).update_email
       contact = JSON.parse response

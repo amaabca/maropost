@@ -18,6 +18,13 @@ module Maropost
       request
     end
 
+    def subscribe_to_list
+      self.url = "#{Maropost.configuration.api_url}/lists/30858/contacts.json"
+      self.http_method = :post
+      self.template_name = "list_create_or_update.json.jbuilder"
+      request
+    end
+
     def update
       self.url = "#{Maropost.configuration.api_url}/contacts/#{data[:id]}.json"
       self.http_method = :put
