@@ -13,7 +13,7 @@ module Maropost
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       )
       Maropost::Contact.new(JSON.parse response.body)
-    rescue RestClient::NotFound
+    rescue RestClient::ResourceNotFound
       nil
     end
 
@@ -41,6 +41,9 @@ module Maropost
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       )
       Maropost::Contact.new(JSON.parse response.body)
+    rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
+      contact.errors << 'Unable to create or update contact'
+      contact
     end
 
     def self.update(contact)
@@ -58,6 +61,9 @@ module Maropost
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       )
       Maropost::Contact.new(JSON.parse response.body)
+    rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
+      contact.errors << 'Unable to update contact'
+      contact
     end
 
     private

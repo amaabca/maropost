@@ -9,7 +9,7 @@ describe Maropost::Api do
         WebMock.stub_request(:get, /.*contacts\/email.json/).to_return(body: maropost_contact_response)
 
         contact = Maropost::Api.find(maropost_contact_response['email'])
-        
+
         expected_contact = JSON.parse maropost_contact_response
         expect(contact.id).to eq expected_contact['id']
         expect(contact.email).to eq expected_contact['email']
@@ -70,22 +70,50 @@ describe Maropost::Api do
   end
 
   describe 'update' do
-    context 'is successful' do
+    let(:existing_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
+    subject { Maropost::Api.update(Maropost::Contact.new('id' => 741000000)) }
+
+    context 'is successful' do
+      it 'updates the contact in maropost' do
+        WebMock.stub_request(:put, /.*contacts\/741000000.json/).to_return(body: existing_maropost_contact)
+        contact = subject
+
+        expect(contact.errors).to be_empty
+      end
     end
 
     context 'fails' do
+      it 'sets an error on contact' do
+        WebMock.stub_request(:put, /.*contacts\/741000000.json/).to_return(status: 422)
+        contact = subject
 
+        expect(contact.errors).to include 'Unable to update contact'
+      end
     end
   end
 
   describe 'create' do
-    context 'is successful' do
+    let(:new_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
+    subject { Maropost::Api.create(Maropost::Contact.new('email' => 'test@test.com')) }
+
+    context 'is successful' do
+      it 'creates the contact in maropost' do
+        WebMock.stub_request(:post, /.*contacts.json/).to_return(body: new_maropost_contact)
+        contact = subject
+
+        expect(contact.errors).to be_empty
+      end
     end
 
     context 'fails' do
+      it 'sets an error on contact' do
+        WebMock.stub_request(:post, /.*contacts.json/).to_return(status: 422)
+        contact = subject
 
+        expect(contact.errors).to include 'Unable to create or update contact'
+      end
     end
   end
 end

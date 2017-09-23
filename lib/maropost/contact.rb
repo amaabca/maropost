@@ -4,7 +4,7 @@ module Maropost
                   :ama_rewards, :ama_membership, :ama_insurance, :ama_travel, :ama_new_member_series, :ama_fleet_safety,
                   :personal_vehicle_reminder, :business_vehicle_reminder, :associate_vehicle_reminder,
                   :ama_vr_reminder, :ama_vr_reminder_email, :ama_vr_reminder_sms, :ama_vr_reminder_autocall,
-                  :phone_number, :cell_phone_number
+                  :phone_number, :cell_phone_number, :errors
 
     def initialize(data)
       self.id = data['id']
@@ -24,6 +24,8 @@ module Maropost
       self.ama_vr_reminder_autocall = data['ama_vr_reminder_autocall'] || '0'
       self.phone_number = data['phone'] || ''
       self.cell_phone_number = data['cell_phone_number'] || ''
+
+      self.errors = []
     end
   end
 end
