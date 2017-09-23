@@ -76,9 +76,9 @@ module Maropost
                      business_vehicle_reminder: contact.business_vehicle_reminder,
                      associate_vehicle_reminder: contact.associate_vehicle_reminder,
                      ama_vr_reminder: contact.ama_vr_reminder,
-                     ama_vr_reminder_email: contact.vr_reminder_email,
-                     ama_vr_reminder_sms: contact.vr_reminder_sms,
-                     ama_vr_reminder_autocall: contact.vr_reminder_autocall,
+                     ama_vr_reminder_email: contact.ama_vr_reminder_email,
+                     ama_vr_reminder_sms: contact.ama_vr_reminder_sms,
+                     ama_vr_reminder_autocall: contact.ama_vr_reminder_autocall,
                      cell_phone_number: contact.cell_phone_number,
                      phone: contact.phone_number
                    }
