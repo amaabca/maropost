@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w(lib spec)
 
   spec.add_dependency 'rest-client'
+  spec.add_dependency 'rest-client-jogger'
 
   spec.required_ruby_version = '>= 2.2'
 end

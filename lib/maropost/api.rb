@@ -40,7 +40,7 @@ module Maropost
     private
 
     def self.request(method, url, payload = {})
-      RestClient::Request.execute(
+      RestClient::Request.logged_request(
         method: method,
         timeout: 10,
         open_timeout: 10,

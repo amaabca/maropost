@@ -1,5 +1,6 @@
 require 'json'
 require 'rest_client'
+require 'rest_client/jogger'
 require 'maropost/version'
 require 'maropost/configuration'
 require 'maropost/api'
