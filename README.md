@@ -22,7 +22,34 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+To find a contact in Maropost:
+``` ruby
+Maropost::Api.find('email@example.com')
+```
+
+To create or update a contact in Maropost:
+```ruby
+    Maropost::Api.update_subscriptions(
+      Maropost::Contact.new(
+        { email: email,
+          ama_rewards: ama_rewards,
+          ama_membership: ama_membership,
+          ama_insurance: ama_insurance,
+          ama_travel: ama_travel,
+          ama_new_member_series: ama_new_member_series,
+          ama_fleet_safety: ama_fleet_safety,
+          personal_vehicle_reminder: personal_vehicle_reminder,
+          business_vehicle_reminder: business_vehicle_reminder,
+          associate_vehicle_reminder: associate_vehicle_reminder,
+          ama_vr_reminder: ama_vr_reminder,
+          ama_vr_reminder_email: ama_vr_reminder_email,
+          ama_vr_reminder_sms: ama_vr_reminder_sms,
+          ama_vr_reminder_autocall: ama_vr_reminder_autocall,
+          cell_phone_number: cell_phone_number.present? ? "1#{cell_phone_number}" : '',
+          phone_number: phone_number }.stringify_keys
+      )
+    )
+```
 
 ## Development
 
