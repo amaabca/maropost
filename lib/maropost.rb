@@ -1,5 +1,7 @@
-require "maropost/version"
-
-module Maropost
-  # Your code goes here...
-end
+require 'json'
+require 'rest_client'
+require 'rest_client/jogger'
+require 'maropost/version'
+require 'maropost/configuration'
+require 'maropost/api'
+require 'maropost/contact'

@@ -1,2 +1,8 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'rspec'
+require 'webmock/rspec'
 require 'maropost'
+
+RSpec.configure do |config|
+  config.color = true
+  config.tty = true
+end
