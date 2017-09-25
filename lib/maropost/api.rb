@@ -1,17 +1,8 @@
 module Maropost
   class Api
     def self.find(email)
-      url = "#{Maropost.configuration.api_url}/contacts/email.json?contact[email]=#{email}"
-
-      response = RestClient::Request.execute(
-        method: :get,
-        timeout: 10,
-        open_timeout: 10,
-        url: url,
-        payload: { auth_token: Maropost.configuration.auth_token }.to_json,
-        headers: { content_type: 'application/json', accept: 'application/json' },
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
-      )
+      response = request(:get,
+                         "#{Maropost.configuration.api_url}/contacts/email.json?contact[email]=#{email}")
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::ResourceNotFound
       nil
@@ -27,19 +18,9 @@ module Maropost
     end
 
     def self.create(contact)
-      url = "#{Maropost.configuration.api_url}/contacts.json"
-
-      payload = create_or_update_payload(contact)
-
-      response = RestClient::Request.execute(
-        method: :post,
-        timeout: 10,
-        open_timeout: 10,
-        url: url,
-        payload: payload.to_json,
-        headers: { content_type: 'application/json', accept: 'application/json' },
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
-      )
+      response = request(:post,
+                         "#{Maropost.configuration.api_url}/contacts.json",
+                         create_or_update_payload(contact))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
       contact.errors << 'Unable to create or update contact'
@@ -47,19 +28,9 @@ module Maropost
     end
 
     def self.update(contact)
-      url = "#{Maropost.configuration.api_url}/contacts/#{contact.id}.json"
-
-      payload = create_or_update_payload(contact)
-
-      response = RestClient::Request.execute(
-        method: :put,
-        timeout: 10,
-        open_timeout: 10,
-        url: url,
-        payload: payload.to_json,
-        headers: { content_type: 'application/json', accept: 'application/json' },
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
-      )
+      response = request(:put,
+                         "#{Maropost.configuration.api_url}/contacts/#{contact.id}.json",
+                         create_or_update_payload(contact))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
       contact.errors << 'Unable to update contact'
@@ -68,9 +39,20 @@ module Maropost
 
     private
 
+    def self.request(method, url, payload = {})
+      RestClient::Request.execute(
+        method: method,
+        timeout: 10,
+        open_timeout: 10,
+        url: url,
+        payload: {auth_token: Maropost.configuration.auth_token}.merge(payload).to_json,
+        headers: { content_type: 'application/json', accept: 'application/json' },
+        verify_ssl: OpenSSL::SSL::VERIFY_PEER
+      )
+    end
+
     def self.create_or_update_payload(contact)
-      { auth_token: Maropost.configuration.auth_token,
-        contact: { email: contact.email,
+      { contact: { email: contact.email,
                    custom_field: {
                      ama_rewards: contact.ama_rewards,
                      ama_membership: contact.ama_membership,
