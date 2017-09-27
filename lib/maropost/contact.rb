@@ -7,6 +7,7 @@ module Maropost
                   :phone_number, :cell_phone_number, :errors
 
     def initialize(data)
+      data = data.stringify_keys
       self.id = data['id']
       self.email = data['email']
       self.ama_rewards = data['ama_rewards'] || '0'
