@@ -19,9 +19,9 @@ describe Maropost::Api do
         expect(contact.ama_travel).to eq expected_contact['ama_travel']
         expect(contact.ama_new_member_series).to eq expected_contact['ama_new_member_series']
         expect(contact.ama_fleet_safety).to eq expected_contact['ama_fleet_safety']
-        expect(contact.personal_vehicle_reminder).to eq expected_contact['personal_vehicle_reminder']
-        expect(contact.business_vehicle_reminder).to eq expected_contact['business_vehicle_reminder']
-        expect(contact.associate_vehicle_reminder).to eq expected_contact['associate_vehicle_reminder']
+        expect(contact.ovrr_personal).to eq expected_contact['ovrr_personal']
+        expect(contact.ovrr_business).to eq expected_contact['ovrr_business']
+        expect(contact.ovrr_associate).to eq expected_contact['ovrr_associate']
         expect(contact.ama_vr_reminder).to eq expected_contact['ama_vr_reminder']
         expect(contact.ama_vr_reminder_email).to eq expected_contact['ama_vr_reminder_email']
         expect(contact.ama_vr_reminder_sms).to eq expected_contact['ama_vr_reminder_sms']
@@ -72,7 +72,7 @@ describe Maropost::Api do
   describe 'update' do
     let(:existing_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
-    subject { Maropost::Api.update(Maropost::Contact.new('id' => 741000000)) }
+    subject { Maropost::Api.update(Maropost::Contact.new(id: 741000000)) }
 
     context 'is successful' do
       it 'updates the contact in maropost' do
@@ -96,7 +96,7 @@ describe Maropost::Api do
   describe 'create' do
     let(:new_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
-    subject { Maropost::Api.create(Maropost::Contact.new('email' => 'test@test.com')) }
+    subject { Maropost::Api.create(Maropost::Contact.new(email: 'test@test.com')) }
 
     context 'is successful' do
       it 'creates the contact in maropost' do
