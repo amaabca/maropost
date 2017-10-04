@@ -2,11 +2,12 @@ module Maropost
   class Contact
     attr_accessor :id, :email,
                   :ama_rewards, :ama_membership, :ama_insurance, :ama_travel, :ama_new_member_series, :ama_fleet_safety,
-                  :personal_vehicle_reminder, :business_vehicle_reminder, :associate_vehicle_reminder,
+                  :ovrr_personal, :ovrr_business, :ovrr_associate,
                   :ama_vr_reminder, :ama_vr_reminder_email, :ama_vr_reminder_sms, :ama_vr_reminder_autocall,
                   :phone_number, :cell_phone_number, :errors
 
     def initialize(data)
+      data = data.stringify_keys
       self.id = data['id']
       self.email = data['email']
       self.ama_rewards = data['ama_rewards'] || '0'
@@ -15,9 +16,9 @@ module Maropost
       self.ama_travel = data['ama_travel'] || '0'
       self.ama_new_member_series = data['ama_new_member_series'] || '0'
       self.ama_fleet_safety = data['ama_fleet_safety'] || '0'
-      self.personal_vehicle_reminder = data['personal_vehicle_reminder'] || ''
-      self.business_vehicle_reminder = data['business_vehicle_reminder'] || ''
-      self.associate_vehicle_reminder = data['associate_vehicle_reminder'] || ''
+      self.ovrr_personal = data['ovrr_personal'] || ''
+      self.ovrr_business = data['ovrr_business'] || ''
+      self.ovrr_associate = data['ovrr_associate'] || ''
       self.ama_vr_reminder = data['ama_vr_reminder'] || '0'
       self.ama_vr_reminder_email = data['ama_vr_reminder_email'] || '0'
       self.ama_vr_reminder_sms = data['ama_vr_reminder_sms'] || '0'

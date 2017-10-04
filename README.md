@@ -1,4 +1,4 @@
-# Maropost
+# Maropost [![Build Status](https://travis-ci.org/amaabca/maropost.svg)](https://travis-ci.org/amaabca/maropost)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/maropost`. To experiment with that code, run `bin/console` for an interactive prompt.
 
@@ -29,26 +29,26 @@ Maropost::Api.find('email@example.com')
 
 To create or update a contact in Maropost:
 ```ruby
-    Maropost::Api.update_subscriptions(
-      Maropost::Contact.new(
-        { email: email,
-          ama_rewards: ama_rewards,
-          ama_membership: ama_membership,
-          ama_insurance: ama_insurance,
-          ama_travel: ama_travel,
-          ama_new_member_series: ama_new_member_series,
-          ama_fleet_safety: ama_fleet_safety,
-          personal_vehicle_reminder: personal_vehicle_reminder,
-          business_vehicle_reminder: business_vehicle_reminder,
-          associate_vehicle_reminder: associate_vehicle_reminder,
-          ama_vr_reminder: ama_vr_reminder,
-          ama_vr_reminder_email: ama_vr_reminder_email,
-          ama_vr_reminder_sms: ama_vr_reminder_sms,
-          ama_vr_reminder_autocall: ama_vr_reminder_autocall,
-          cell_phone_number: cell_phone_number.present? ? "1#{cell_phone_number}" : '',
-          phone_number: phone_number }.stringify_keys
-      )
+  Maropost::Api.update_subscriptions(
+    Maropost::Contact.new(
+      email: email,
+      ama_rewards: ama_rewards,
+      ama_membership: ama_membership,
+      ama_insurance: ama_insurance,
+      ama_travel: ama_travel,
+      ama_new_member_series: ama_new_member_series,
+      ama_fleet_safety: ama_fleet_safety,
+      ovrr_personal: personal_vehicle_reminder,
+      ovrr_business: business_vehicle_reminder,
+      ovrr_associate: associate_vehicle_reminder,
+      ama_vr_reminder: ama_vr_reminder,
+      ama_vr_reminder_email: ama_vr_reminder_email,
+      ama_vr_reminder_sms: ama_vr_reminder_sms,
+      ama_vr_reminder_autocall: ama_vr_reminder_autocall,
+      cell_phone_number: cell_phone_number.present? ? "1#{cell_phone_number}" : '',
+      phone: phone_number
     )
+  )
 ```
 
 ## Development
@@ -59,7 +59,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/maropost.
+Bug reports and pull requests are welcome on GitHub at https://github.com/amaabca/maropost.
 
 
 ## License

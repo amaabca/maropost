@@ -45,7 +45,7 @@ module Maropost
         timeout: 10,
         open_timeout: 10,
         url: url,
-        payload: {auth_token: Maropost.configuration.auth_token}.merge(payload).to_json,
+        payload: { auth_token: Maropost.configuration.auth_token }.merge(payload).to_json,
         headers: { content_type: 'application/json', accept: 'application/json' },
         verify_ssl: OpenSSL::SSL::VERIFY_PEER
       )
@@ -53,6 +53,7 @@ module Maropost
 
     def self.create_or_update_payload(contact)
       { contact: { email: contact.email,
+                   phone: contact.phone_number,
                    custom_field: {
                      ama_rewards: contact.ama_rewards,
                      ama_membership: contact.ama_membership,
@@ -60,17 +61,16 @@ module Maropost
                      ama_travel: contact.ama_travel,
                      ama_new_member_series: contact.ama_new_member_series,
                      ama_fleet_safety: contact.ama_fleet_safety,
-                     personal_vehicle_reminder: contact.personal_vehicle_reminder,
-                     business_vehicle_reminder: contact.business_vehicle_reminder,
-                     associate_vehicle_reminder: contact.associate_vehicle_reminder,
+                     ovrr_personal: contact.ovrr_personal,
+                     ovrr_business: contact.ovrr_business,
+                     ovrr_associate: contact.ovrr_associate,
                      ama_vr_reminder: contact.ama_vr_reminder,
                      ama_vr_reminder_email: contact.ama_vr_reminder_email,
                      ama_vr_reminder_sms: contact.ama_vr_reminder_sms,
                      ama_vr_reminder_autocall: contact.ama_vr_reminder_autocall,
-                     cell_phone_number: contact.cell_phone_number,
-                     phone: contact.phone_number
+                     cell_phone_number: contact.cell_phone_number
                    }
-        }
+      }
       }
     end
   end
