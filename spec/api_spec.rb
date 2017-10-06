@@ -6,7 +6,7 @@ describe Maropost::Api do
       let(:maropost_contact_response) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
       it 'returns maropost contact' do
-        WebMock.stub_request(:get, /.*contacts\/email.json/).to_return(body: maropost_contact_response)
+        stub_find_maropost_contact(email: maropost_contact_response['email'], body: maropost_contact_response)
 
         contact = Maropost::Api.find(maropost_contact_response['email'])
 
@@ -32,10 +32,11 @@ describe Maropost::Api do
     end
 
     context 'contact does not exist on maropost' do
+      let(:email) { 'test@test.com' }
       it 'returns nil' do
-        WebMock.stub_request(:get, /.*contacts\/email.json/).to_return(status: 404)
+        stub_find_maropost_contact(email: email, status: 404)
 
-        contact = Maropost::Api.find('test@test.com')
+        contact = Maropost::Api.find(email)
 
         expect(contact).to be_nil
       end
@@ -44,15 +45,15 @@ describe Maropost::Api do
 
   describe 'update subscription' do
     let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com') }
-    let(:existing_contact) { Maropost::Contact.new(id: 375373, email: 'test@test.com') }
+    let(:existing_contact) { Maropost::Contact.new(id: 741000000, email: 'test@test.com') }
 
     subject { Maropost::Api.update_subscriptions(contact) }
 
     context 'contact exists on maropost' do
       it 'calls update' do
-        expect(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
-        expect(Maropost::Api).to receive(:update).with(contact)
-        allow(Maropost::DoNotMailList).to receive(:create).with(contact)
+        stub_find_maropost_contact(email: contact.email)
+        stub_update_maropost_contact(contact_id: existing_contact.id)
+        stub_do_not_mail_list_create
 
         subject
 
@@ -63,8 +64,8 @@ describe Maropost::Api do
         let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1') }
 
         it 'removes from do not mail list' do
-          allow(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
-          allow(Maropost::Api).to receive(:update).with(contact)
+          stub_find_maropost_contact(email: contact.email)
+          stub_update_maropost_contact(contact_id: existing_contact.id)
           expect(Maropost::DoNotMailList).to receive(:delete).with(contact)
           subject
         end
@@ -72,8 +73,8 @@ describe Maropost::Api do
 
       context 'unsubscribing from all lists' do
         it 'adds to do not mail list' do
-          allow(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
-          allow(Maropost::Api).to receive(:update).with(contact)
+          stub_find_maropost_contact(email: contact.email)
+          stub_update_maropost_contact(contact_id: existing_contact.id)
           expect(Maropost::DoNotMailList).to receive(:create).with(contact)
           subject
         end
@@ -84,7 +85,7 @@ describe Maropost::Api do
       it 'calls create' do
         expect(Maropost::Api).to receive(:find).with(contact.email).and_return(nil)
         expect(Maropost::Api).to receive(:create).with(contact)
-        allow(Maropost::DoNotMailList).to receive(:create).with(contact)
+        stub_do_not_mail_list_create
 
         subject
       end
@@ -92,13 +93,11 @@ describe Maropost::Api do
   end
 
   describe 'update' do
-    let(:existing_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
-
     subject { Maropost::Api.update(Maropost::Contact.new(id: 741000000)) }
 
     context 'is successful' do
       it 'updates the contact in maropost' do
-        WebMock.stub_request(:put, /.*contacts\/741000000.json/).to_return(body: existing_maropost_contact)
+        stub_update_maropost_contact(contact_id: 741000000)
         contact = subject
 
         expect(contact.errors).to be_empty
@@ -107,7 +106,7 @@ describe Maropost::Api do
 
     context 'fails' do
       it 'sets an error on contact' do
-        WebMock.stub_request(:put, /.*contacts\/741000000.json/).to_return(status: 422)
+        stub_update_maropost_contact(contact_id: 741000000, status: 422)
         contact = subject
 
         expect(contact.errors).to include 'Unable to update contact'
@@ -116,13 +115,11 @@ describe Maropost::Api do
   end
 
   describe 'create' do
-    let(:new_maropost_contact) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
-
     subject { Maropost::Api.create(Maropost::Contact.new(email: 'test@test.com')) }
 
     context 'is successful' do
       it 'creates the contact in maropost' do
-        WebMock.stub_request(:post, /.*contacts.json/).to_return(body: new_maropost_contact)
+        stub_create_maropost_contact
         contact = subject
 
         expect(contact.errors).to be_empty
@@ -131,7 +128,7 @@ describe Maropost::Api do
 
     context 'fails' do
       it 'sets an error on contact' do
-        WebMock.stub_request(:post, /.*contacts.json/).to_return(status: 422)
+        stub_create_maropost_contact(status: 422)
         contact = subject
 
         expect(contact.errors).to include 'Unable to create or update contact'

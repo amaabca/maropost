@@ -24,7 +24,7 @@ describe Maropost::DoNotMailList do
 
     context 'raises exception' do
       it 'returns false' do
-        stub_do_not_mail_list_exists({ status: 400 })
+        stub_do_not_mail_list_exists(status: 400)
         expect(subject.errors).not_to be_empty
       end
     end
@@ -35,7 +35,7 @@ describe Maropost::DoNotMailList do
 
     context 'successfully added to do not mail list' do
       it 'no errors exist' do
-        stub_do_not_mail_list_create({ status: 200 })
+        stub_do_not_mail_list_create(status: 200)
 
         expect(subject.errors).to be_empty
       end
@@ -43,7 +43,7 @@ describe Maropost::DoNotMailList do
 
     context 'raises exception' do
       it 'adds errors to contact' do
-        stub_do_not_mail_list_create({ status: 422 })
+        stub_do_not_mail_list_create(status: 422)
 
         expect(subject.errors).not_to be_empty
       end
@@ -55,14 +55,14 @@ describe Maropost::DoNotMailList do
 
     context 'successfully added to do not mail list' do
       it 'no errors exist' do
-        stub_do_not_mail_list_delete({status: 200})
+        stub_do_not_mail_list_delete(status: 200)
         expect(subject.errors).to be_empty
       end
     end
 
     context 'raises exception' do
       it 'adds errors to contact' do
-        stub_do_not_mail_list_delete({status: 422})
+        stub_do_not_mail_list_delete(status: 422)
         expect(subject.errors).not_to be_empty
       end
     end
