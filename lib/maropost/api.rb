@@ -41,7 +41,7 @@ module Maropost
     private
 
     def self.maropost_url(path, query = nil)
-      URI.join(Maropost.configuration.api_url, path).tap { |u| query && u.query = query }.to_s
+      "#{Maropost.configuration.api_url}#{path}?#{query}"
     end
 
     def self.request(method, url, payload = {})
