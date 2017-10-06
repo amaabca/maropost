@@ -2,7 +2,7 @@ module Maropost
   class DoNotMailList
     def self.exists?(contact)
       response = request(:get,
-                         maropost_url('/global_unsubscribes/email.json', "contact[email]=#{contact.email}"))
+                         maropost_url('global_unsubscribes/email.json', "contact[email]=#{contact.email}"))
       JSON.parse response.body
 
       response['id'] ? true : false
@@ -15,7 +15,7 @@ module Maropost
       payload = { 'global_unsubscribe': { 'email': contact.email } }
 
       request(:post,
-              maropost_url('/global_unsubscribes.json'),
+              maropost_url('global_unsubscribes.json'),
               payload)
       contact
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
@@ -25,7 +25,7 @@ module Maropost
 
     def self.delete(contact)
       request(:delete,
-              maropost_url('/global_unsubscribes/delete.json', "email=#{contact.email}"))
+              maropost_url('global_unsubscribes/delete.json', "email=#{contact.email}"))
       contact
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
       contact.errors << "Unable to unsubscribe contact. Error: #{e.message}"
