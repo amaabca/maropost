@@ -28,5 +28,12 @@ module Maropost
 
       self.errors = []
     end
+
+    def subscribed_to_any_lists?
+      ama_rewards.eql?('1') || ama_membership.eql?('1') || ama_insurance.eql?('1') || ama_travel.eql?('1') ||
+        ama_new_member_series.eql?('1') || ama_fleet_safety.eql?('1') ||
+        ama_vr_reminder.eql?('1') || ama_vr_reminder_email.eql?('1') || ama_vr_reminder_sms.eql?('1') ||
+        ama_vr_reminder_autocall.eql?('1')
+    end
   end
 end
