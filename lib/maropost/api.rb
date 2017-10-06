@@ -2,7 +2,7 @@ module Maropost
   class Api
     def self.find(email)
       response = request(:get,
-                         "#{Maropost.configuration.api_url}/contacts/email.json?contact[email]=#{email}")
+                         maropost_url('/contacts/email.json', "contact[email]=#{email}"))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::ResourceNotFound
       nil
@@ -20,7 +20,7 @@ module Maropost
 
     def self.create(contact)
       response = request(:post,
-                         "#{Maropost.configuration.api_url}/contacts.json",
+                         maropost_url('/contacts.json'),
                          create_or_update_payload(contact))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
@@ -30,7 +30,7 @@ module Maropost
 
     def self.update(contact)
       response = request(:put,
-                         "#{Maropost.configuration.api_url}/contacts/#{contact.id}.json",
+                         maropost_url("/contacts/#{contact.id}.json"),
                          create_or_update_payload(contact))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
@@ -39,6 +39,10 @@ module Maropost
     end
 
     private
+
+    def self.maropost_url(path, query = nil)
+      URI.join(Maropost.configuration.api_url, path).tap { |u| query && u.query = query }.to_s
+    end
 
     def self.request(method, url, payload = {})
       RestClient::Request.logged_request(

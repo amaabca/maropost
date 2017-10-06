@@ -12,7 +12,7 @@ module Maropost
     end
 
     def self.create(contact)
-      payload = { "global_unsubscribe": { "email": contact.email } }
+      payload = { 'global_unsubscribe': { 'email': contact.email } }
 
       request(:post,
               maropost_url('/global_unsubscribes.json'),
