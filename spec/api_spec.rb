@@ -52,10 +52,31 @@ describe Maropost::Api do
       it 'calls update' do
         expect(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
         expect(Maropost::Api).to receive(:update).with(contact)
+        allow(Maropost::DoNotMailList).to receive(:create).with(contact)
 
         subject
 
         expect(contact.id).to eq existing_contact.id
+      end
+
+      context 'subscribing to a list' do
+        let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1') }
+
+        it 'removes from do not mail list' do
+          allow(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
+          allow(Maropost::Api).to receive(:update).with(contact)
+          expect(Maropost::DoNotMailList).to receive(:delete).with(contact)
+          subject
+        end
+      end
+
+      context 'unsubscribing from all lists' do
+        it 'adds to do not mail list' do
+          allow(Maropost::Api).to receive(:find).with(contact.email).and_return(existing_contact)
+          allow(Maropost::Api).to receive(:update).with(contact)
+          expect(Maropost::DoNotMailList).to receive(:create).with(contact)
+          subject
+        end
       end
     end
 
@@ -63,6 +84,7 @@ describe Maropost::Api do
       it 'calls create' do
         expect(Maropost::Api).to receive(:find).with(contact.email).and_return(nil)
         expect(Maropost::Api).to receive(:create).with(contact)
+        allow(Maropost::DoNotMailList).to receive(:create).with(contact)
 
         subject
       end
