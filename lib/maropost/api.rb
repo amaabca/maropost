@@ -2,7 +2,7 @@ module Maropost
   class Api
     def self.find(email)
       response = request(:get,
-                         maropost_url('contacts/email.json', "contact[email]=#{email}"))
+                         maropost_url('contacts/email.json', "contact[email]=#{CGI::escape(email)}"))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::ResourceNotFound
       nil
@@ -20,8 +20,8 @@ module Maropost
 
     def self.create(contact)
       response = request(:post,
-                         maropost_url('contacts.json'),
-                         create_or_update_payload(contact))
+                          maropost_url('contacts.json'),
+                          create_or_update_payload(contact))
       Maropost::Contact.new(JSON.parse response.body)
     rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
       contact.errors << 'Unable to create or update contact'
@@ -59,24 +59,26 @@ module Maropost
     def self.create_or_update_payload(contact)
       {
         contact:
-          { email: contact.email,
+          {
+            email: contact.email,
             phone: contact.phone_number,
-            custom_field: {
-              ama_rewards: contact.ama_rewards,
-              ama_membership: contact.ama_membership,
-              ama_insurance: contact.ama_insurance,
-              ama_travel: contact.ama_travel,
-              ama_new_member_series: contact.ama_new_member_series,
-              ama_fleet_safety: contact.ama_fleet_safety,
-              ovrr_personal: contact.ovrr_personal,
-              ovrr_business: contact.ovrr_business,
-              ovrr_associate: contact.ovrr_associate,
-              ama_vr_reminder: contact.ama_vr_reminder,
-              ama_vr_reminder_email: contact.ama_vr_reminder_email,
-              ama_vr_reminder_sms: contact.ama_vr_reminder_sms,
-              ama_vr_reminder_autocall: contact.ama_vr_reminder_autocall,
-              cell_phone_number: contact.cell_phone_number
-            }
+            custom_field:
+              {
+                ama_rewards: contact.ama_rewards,
+                ama_membership: contact.ama_membership,
+                ama_insurance: contact.ama_insurance,
+                ama_travel: contact.ama_travel,
+                ama_new_member_series: contact.ama_new_member_series,
+                ama_fleet_safety: contact.ama_fleet_safety,
+                ovrr_personal: contact.ovrr_personal,
+                ovrr_business: contact.ovrr_business,
+                ovrr_associate: contact.ovrr_associate,
+                ama_vr_reminder: contact.ama_vr_reminder,
+                ama_vr_reminder_email: contact.ama_vr_reminder_email,
+                ama_vr_reminder_sms: contact.ama_vr_reminder_sms,
+                ama_vr_reminder_autocall: contact.ama_vr_reminder_autocall,
+                cell_phone_number: contact.cell_phone_number
+              }
           }
       }
     end

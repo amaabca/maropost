@@ -6,7 +6,7 @@ describe Maropost::Api do
       let(:maropost_contact_response) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
       it 'returns maropost contact' do
-        stub_find_maropost_contact(email: maropost_contact_response['email'], body: maropost_contact_response)
+        stub_find_maropost_contact(email: CGI::escape(maropost_contact_response['email']), body: maropost_contact_response)
 
         contact = Maropost::Api.find(maropost_contact_response['email'])
 
