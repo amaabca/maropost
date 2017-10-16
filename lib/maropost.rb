@@ -1,3 +1,4 @@
+require 'active_support/all'
 require 'json'
 require 'rest_client'
 require 'rest_client/jogger'

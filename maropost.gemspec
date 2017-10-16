@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rest-client'
   spec.add_dependency 'rest-client-jogger'
+  spec.add_dependency 'activesupport'
+  spec.add_development_dependency 'simplecov'
 
   spec.required_ruby_version = '>= 2.2'
 end

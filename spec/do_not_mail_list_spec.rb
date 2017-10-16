@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Maropost::DoNotMailList do
   let(:contact) { Maropost::Contact.new(email: 'test@example.com') }
 
