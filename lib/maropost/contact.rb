@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 module Maropost
   class Contact
-    ATTRIBUTES = %i(
+    ATTRIBUTES = %i[
       id
       email
       phone_number
       cell_phone_number
       lists
       errors
-    ).freeze
-    LISTS = %i(
+    ].freeze
+    LISTS = %i[
       ama_rewards
       ama_membership
       ama_insurance
@@ -22,7 +24,7 @@ module Maropost
       ama_vr_reminder_email
       ama_vr_reminder_sms
       ama_vr_reminder_autocall
-    ).freeze
+    ].freeze
 
     attr_accessor(*ATTRIBUTES)
 

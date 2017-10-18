@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Maropost::Contact do
   describe 'subscribed to any lists' do
     described_class::LISTS.each do |list_name|
