@@ -1,4 +1,4 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 describe Maropost::DoNotMailList do
   let(:contact) { Maropost::Contact.new(email: 'test@example.com') }
@@ -10,14 +10,14 @@ describe Maropost::DoNotMailList do
 
     context 'email address is found on list' do
       it 'returns true' do
-        stub_do_not_mail_list_exists({ body: found_response })
+        stub_do_not_mail_list_exists(body: found_response)
         expect(subject).to be_truthy
       end
     end
 
     context 'email address is not found on list' do
       it 'returns false' do
-        stub_do_not_mail_list_exists({ body: not_found_response })
+        stub_do_not_mail_list_exists(body: not_found_response)
         expect(subject).to be_falsey
       end
     end

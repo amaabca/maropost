@@ -1,31 +1,36 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 describe Maropost::Api do
   describe 'find' do
     context 'contact exists on maropost' do
       let(:maropost_contact_response) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
 
+      before(:each) do
+        stub_find_maropost_contact(
+          email: maropost_contact_response['email'],
+          body: maropost_contact_response
+        )
+      end
+
       it 'returns maropost contact' do
-        stub_find_maropost_contact(email: CGI::escape(maropost_contact_response['email']), body: maropost_contact_response)
-
         contact = Maropost::Api.find(maropost_contact_response['email'])
-
+        lists = contact.lists
         expected_contact = JSON.parse maropost_contact_response
         expect(contact.id).to eq expected_contact['id']
         expect(contact.email).to eq expected_contact['email']
-        expect(contact.ama_rewards).to eq expected_contact['ama_rewards']
-        expect(contact.ama_membership).to eq expected_contact['ama_membership']
-        expect(contact.ama_insurance).to eq expected_contact['ama_insurance']
-        expect(contact.ama_travel).to eq expected_contact['ama_travel']
-        expect(contact.ama_new_member_series).to eq expected_contact['ama_new_member_series']
-        expect(contact.ama_fleet_safety).to eq expected_contact['ama_fleet_safety']
-        expect(contact.ovrr_personal).to eq expected_contact['ovrr_personal']
-        expect(contact.ovrr_business).to eq expected_contact['ovrr_business']
-        expect(contact.ovrr_associate).to eq expected_contact['ovrr_associate']
-        expect(contact.ama_vr_reminder).to eq expected_contact['ama_vr_reminder']
-        expect(contact.ama_vr_reminder_email).to eq expected_contact['ama_vr_reminder_email']
-        expect(contact.ama_vr_reminder_sms).to eq expected_contact['ama_vr_reminder_sms']
-        expect(contact.ama_vr_reminder_autocall).to eq expected_contact['ama_vr_reminder_autocall']
+        expect(lists[:ama_rewards]).to eq expected_contact['ama_rewards']
+        expect(lists[:ama_membership]).to eq expected_contact['ama_membership']
+        expect(lists[:ama_insurance]).to eq expected_contact['ama_insurance']
+        expect(lists[:ama_travel]).to eq expected_contact['ama_travel']
+        expect(lists[:ama_new_member_series]).to eq expected_contact['ama_new_member_series']
+        expect(lists[:ama_fleet_safety]).to eq expected_contact['ama_fleet_safety']
+        expect(lists[:ovrr_personal]).to eq expected_contact['ovrr_personal']
+        expect(lists[:ovrr_business]).to eq expected_contact['ovrr_business']
+        expect(lists[:ovrr_associate]).to eq expected_contact['ovrr_associate']
+        expect(lists[:ama_vr_reminder]).to eq expected_contact['ama_vr_reminder']
+        expect(lists[:ama_vr_reminder_email]).to eq expected_contact['ama_vr_reminder_email']
+        expect(lists[:ama_vr_reminder_sms]).to eq expected_contact['ama_vr_reminder_sms']
+        expect(lists[:ama_vr_reminder_autocall]).to eq expected_contact['ama_vr_reminder_autocall']
         expect(contact.phone_number).to eq expected_contact['phone']
         expect(contact.cell_phone_number).to eq expected_contact['cell_phone_number']
       end
@@ -45,7 +50,7 @@ describe Maropost::Api do
 
   describe 'update subscription' do
     let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com') }
-    let(:existing_contact) { Maropost::Contact.new(id: 741000000, email: 'test@test.com') }
+    let(:existing_contact) { Maropost::Contact.new(id: 741_000_000, email: 'test@test.com') }
 
     subject { Maropost::Api.update_subscriptions(contact) }
 
@@ -93,11 +98,11 @@ describe Maropost::Api do
   end
 
   describe 'update' do
-    subject { Maropost::Api.update(Maropost::Contact.new(id: 741000000)) }
+    subject { Maropost::Api.update(Maropost::Contact.new(id: 741_000_000)) }
 
     context 'is successful' do
       it 'updates the contact in maropost' do
-        stub_update_maropost_contact(contact_id: 741000000)
+        stub_update_maropost_contact(contact_id: 741_000_000)
         contact = subject
 
         expect(contact.errors).to be_empty
@@ -106,7 +111,7 @@ describe Maropost::Api do
 
     context 'fails' do
       it 'sets an error on contact' do
-        stub_update_maropost_contact(contact_id: 741000000, status: 422)
+        stub_update_maropost_contact(contact_id: 741_000_000, status: 422)
         contact = subject
 
         expect(contact.errors).to include 'Unable to update contact'

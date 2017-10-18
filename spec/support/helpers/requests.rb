@@ -1,41 +1,95 @@
+# frozen_string_literal: true
+
 module Helpers
   module Requests
-    @@default_json_response = File.read File.join('spec', 'fixtures', 'contacts', 'contact.json')
-
     def stub_find_maropost_contact(opts = {})
       email = opts.fetch(:email)
-      body = opts.fetch(:body, @@default_json_response)
+      body = opts.fetch(:body) { default_json_response }
       status = opts.fetch(:status, 200)
-      stub_request(:get, /.*contacts\/email\.json\?contact\[email\]=#{email}*/).to_return(status: status, body: body, headers: {})
+      url = maropost_url(
+        'contacts/email.json',
+        'contact[email]': email,
+        'auth_token': Maropost.configuration.auth_token
+      )
+      stub_request(:get, url)
+        .to_return(
+          status: status,
+          body: body
+        )
     end
 
     def stub_create_maropost_contact(opts = {})
-      body = opts.fetch(:body, @@default_json_response)
+      body = opts.fetch(:body) { default_json_response }
       status = opts.fetch(:status, 200)
-      stub_request(:post, /.*contacts\.json/).to_return(status: status, body: body, headers: {})
+      stub_request(:post, maropost_url('contacts.json'))
+        .to_return(
+          status: status,
+          body: body
+        )
     end
 
     def stub_update_maropost_contact(opts = {})
       contact_id = opts.fetch(:contact_id)
-      body = opts.fetch(:body, @@default_json_response)
+      body = opts.fetch(:body) { default_json_response }
       status = opts.fetch(:status, 200)
-      stub_request(:put, /.*contacts\/#{contact_id}\.json*/).to_return(status: status, body: body, headers: {})
+      stub_request(:put, maropost_url("contacts/#{contact_id}.json"))
+        .to_return(
+          status: status,
+          body: body
+        )
     end
 
     def stub_do_not_mail_list_exists(opts = {})
       status = opts.fetch(:status, 200)
-      body = opts.fetch(:body, '')
-      stub_request(:get, /.*global_unsubscribes\/email.json/).to_return(body: body, status: status)
+      body = opts.fetch(:body) { '' }
+      email = opts.fetch(:email) { 'test@example.com' }
+      url = maropost_url(
+        'global_unsubscribes/email.json',
+        'contact[email]': email,
+        'auth_token': Maropost.configuration.auth_token
+      )
+      stub_request(:get, url)
+        .to_return(
+          body: body,
+          status: status
+        )
     end
 
     def stub_do_not_mail_list_create(opts = {})
       status = opts.fetch(:status, 200)
-      stub_request(:post, /.*global_unsubscribes/).to_return(status: status)
+      stub_request(:post, maropost_url('global_unsubscribes.json'))
+        .to_return(
+          status: status
+        )
     end
 
     def stub_do_not_mail_list_delete(opts = {})
       status = opts.fetch(:status, 200)
-      stub_request(:delete, /.*global_unsubscribes\/delete/).to_return(status: status)
+      email = opts.fetch(:email) { 'test@example.com' }
+      url = maropost_url(
+        'global_unsubscribes/delete.json',
+        'email': email
+      )
+      stub_request(:delete, url)
+        .to_return(
+          status: status
+        )
+    end
+
+    private
+
+    def encode_query(hash)
+      RestClient::Utils.encode_query_string(hash)
+    end
+
+    def maropost_url(path, query = nil)
+      query &&= encode_query(query)
+      uri = URI.join(Maropost.configuration.api_url, path)
+      uri.tap { |u| query && u.query = query }.to_s
+    end
+
+    def default_json_response
+      File.read(File.join('spec', 'fixtures', 'contacts', 'contact.json'))
     end
   end
 end
