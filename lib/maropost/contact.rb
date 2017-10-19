@@ -3,6 +3,7 @@
 module Maropost
   class Contact
     ATTRIBUTES = %i[
+      do_not_contact
       id
       email
       phone_number
@@ -34,9 +35,14 @@ module Maropost
       self.email = data[:email]
       self.phone_number = data[:phone]
       self.cell_phone_number = data[:cell_phone_number]
+      self.do_not_contact = data.fetch(:do_not_contact, false)
       self.errors = []
       self.lists = {}
       initialize_lists(data)
+    end
+
+    def allow_emails?
+      @allow_emails ||= email.present? && !do_not_contact && !DoNotMailList.exists?(self)
     end
 
     def subscribed_to_any_lists?

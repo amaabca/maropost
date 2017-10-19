@@ -32,6 +32,7 @@ To create or update a contact in Maropost:
   Maropost::Api.update_subscriptions(
     Maropost::Contact.new(
       email: email,
+      do_not_contact: false, # or possibly true to opt in to the DoNotMailList
       ama_rewards: ama_rewards,
       ama_membership: ama_membership,
       ama_insurance: ama_insurance,
@@ -45,7 +46,7 @@ To create or update a contact in Maropost:
       ama_vr_reminder_email: ama_vr_reminder_email,
       ama_vr_reminder_sms: ama_vr_reminder_sms,
       ama_vr_reminder_autocall: ama_vr_reminder_autocall,
-      cell_phone_number: cell_phone_number.present? ? "1#{cell_phone_number}" : '',
+      cell_phone_number: cell_phone_number,
       phone: phone_number
     )
   )
@@ -65,4 +66,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/amaabc
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

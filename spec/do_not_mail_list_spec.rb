@@ -5,8 +5,8 @@ describe Maropost::DoNotMailList do
 
   describe 'GET #exists?' do
     subject { Maropost::DoNotMailList.exists?(contact) }
-    let(:found_response) { File.read File.join('spec', 'fixtures', 'do_not_mail_list', 'do_not_mail_found.json') }
-    let(:not_found_response) { File.read File.join('spec', 'fixtures', 'do_not_mail_list', 'do_not_mail_not_found.json') }
+    let(:found_response) { read_fixture('do_not_mail_list', 'do_not_mail_found.json') }
+    let(:not_found_response) { read_fixture('do_not_mail_list', 'do_not_mail_not_found.json') }
 
     context 'email address is found on list' do
       it 'returns true' do

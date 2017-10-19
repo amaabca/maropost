@@ -3,7 +3,7 @@
 describe Maropost::Api do
   describe 'find' do
     context 'contact exists on maropost' do
-      let(:maropost_contact_response) { File.read File.join('spec', 'fixtures', 'contacts', 'contact.json') }
+      let(:maropost_contact_response) { read_fixture('contacts', 'contact.json') }
 
       before(:each) do
         stub_find_maropost_contact(
@@ -54,14 +54,19 @@ describe Maropost::Api do
 
     subject { Maropost::Api.update_subscriptions(contact) }
 
+    before(:each) do
+      stub_find_maropost_contact(email: contact.email)
+      stub_update_maropost_contact(contact_id: existing_contact.id)
+      stub_do_not_mail_list_exists(
+        email: 'test@test.com',
+        body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
+      )
+    end
+
     context 'contact exists on maropost' do
       it 'calls update' do
-        stub_find_maropost_contact(email: contact.email)
-        stub_update_maropost_contact(contact_id: existing_contact.id)
         stub_do_not_mail_list_create
-
         subject
-
         expect(contact.id).to eq existing_contact.id
       end
 
@@ -69,17 +74,26 @@ describe Maropost::Api do
         let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1') }
 
         it 'removes from do not mail list' do
-          stub_find_maropost_contact(email: contact.email)
-          stub_update_maropost_contact(contact_id: existing_contact.id)
           expect(Maropost::DoNotMailList).to receive(:delete).with(contact)
+          subject
+        end
+      end
+
+      context 'explicitly opting into the do not mail list' do
+        let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1', do_not_contact: true) }
+
+        before(:each) do
+          stub_do_not_mail_list_create
+        end
+
+        it 'adds to do not mail list' do
+          expect(Maropost::DoNotMailList).to receive(:create).with(contact)
           subject
         end
       end
 
       context 'unsubscribing from all lists' do
         it 'adds to do not mail list' do
-          stub_find_maropost_contact(email: contact.email)
-          stub_update_maropost_contact(contact_id: existing_contact.id)
           expect(Maropost::DoNotMailList).to receive(:create).with(contact)
           subject
         end
@@ -91,7 +105,6 @@ describe Maropost::Api do
         expect(Maropost::Api).to receive(:find).with(contact.email).and_return(nil)
         expect(Maropost::Api).to receive(:create).with(contact)
         stub_do_not_mail_list_create
-
         subject
       end
     end
@@ -103,18 +116,14 @@ describe Maropost::Api do
     context 'is successful' do
       it 'updates the contact in maropost' do
         stub_update_maropost_contact(contact_id: 741_000_000)
-        contact = subject
-
-        expect(contact.errors).to be_empty
+        expect(subject.errors).to be_empty
       end
     end
 
     context 'fails' do
       it 'sets an error on contact' do
         stub_update_maropost_contact(contact_id: 741_000_000, status: 422)
-        contact = subject
-
-        expect(contact.errors).to include 'Unable to update contact'
+        expect(subject.errors).to include 'Unable to update contact'
       end
     end
   end
@@ -125,18 +134,14 @@ describe Maropost::Api do
     context 'is successful' do
       it 'creates the contact in maropost' do
         stub_create_maropost_contact
-        contact = subject
-
-        expect(contact.errors).to be_empty
+        expect(subject.errors).to be_empty
       end
     end
 
     context 'fails' do
       it 'sets an error on contact' do
         stub_create_maropost_contact(status: 422)
-        contact = subject
-
-        expect(contact.errors).to include 'Unable to create or update contact'
+        expect(subject.errors).to include 'Unable to create or update contact'
       end
     end
   end

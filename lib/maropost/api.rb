@@ -20,11 +20,11 @@ module Maropost
       end
 
       def update_subscriptions(contact)
+        update_do_not_mail_list(contact)
         to_maropost(
           find(contact.email),
           contact
         )
-        update_do_not_mail_list(contact)
       end
 
       def create(contact)
@@ -75,7 +75,7 @@ module Maropost
       end
 
       def update_do_not_mail_list(contact)
-        if contact.subscribed_to_any_lists?
+        if contact.allow_emails? && contact.subscribed_to_any_lists?
           DoNotMailList.delete(contact)
         else
           DoNotMailList.create(contact)
