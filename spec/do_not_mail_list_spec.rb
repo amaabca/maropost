@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 describe Maropost::DoNotMailList do
-  let(:contact) { Maropost::Contact.new(email: 'test+001@test.com') }
+  let(:email) { 'test+001@test.com' }
+  let(:contact) { Maropost::Contact.new(email: email) }
+
+  before(:each) do
+    stub_do_not_mail_list_exists(
+      email: email,
+      body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
+    )
+  end
 
   describe 'GET #exists?' do
     subject { Maropost::DoNotMailList.exists?(contact) }

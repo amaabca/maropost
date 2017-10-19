@@ -14,10 +14,6 @@ RSpec.configure do |config|
   config.include Helpers::Requests
   config.color = true
   config.tty = true
-
-  config.before(:each) do
-    stub_do_not_mail_list_exists(body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json'))
-  end
 end
 
 Maropost.configure do |config|

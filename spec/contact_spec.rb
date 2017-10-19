@@ -3,6 +3,13 @@
 describe Maropost::Contact do
   let(:email) { 'test+001@test.com' }
 
+  before(:each) do
+    stub_do_not_mail_list_exists(
+      email: email,
+      body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
+    )
+  end
+
   describe 'subscribed to any lists' do
     described_class::LISTS.each do |list_name|
       context "subscribed to #{list_name}" do

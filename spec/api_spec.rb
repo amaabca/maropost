@@ -3,6 +3,13 @@
 describe Maropost::Api do
   let(:email) { 'test+001@test.com' }
 
+  before(:each) do
+    stub_do_not_mail_list_exists(
+      email: email,
+      body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
+    )
+  end
+
   describe 'find' do
     context 'contact exists on maropost' do
       let(:maropost_contact_response) { read_fixture('contacts', 'contact.json') }
@@ -58,10 +65,6 @@ describe Maropost::Api do
     before(:each) do
       stub_find_maropost_contact(email: contact.email)
       stub_update_maropost_contact(contact_id: existing_contact.id)
-      stub_do_not_mail_list_exists(
-        email: 'test+001@test.com',
-        body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
-      )
     end
 
     context 'contact exists on maropost' do
