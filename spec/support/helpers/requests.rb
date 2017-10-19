@@ -89,7 +89,7 @@ module Helpers
     end
 
     def default_json_response
-      File.read(File.join('spec', 'fixtures', 'contacts', 'contact.json'))
+      read_fixture('contacts', 'contact.json')
     end
   end
 end
