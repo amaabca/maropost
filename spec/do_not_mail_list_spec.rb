@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Maropost::DoNotMailList do
-  let(:contact) { Maropost::Contact.new(email: 'test@example.com') }
+  let(:contact) { Maropost::Contact.new(email: 'test+001@test.com') }
 
   describe 'GET #exists?' do
     subject { Maropost::DoNotMailList.exists?(contact) }
@@ -11,21 +11,21 @@ describe Maropost::DoNotMailList do
     context 'email address is found on list' do
       it 'returns true' do
         stub_do_not_mail_list_exists(body: found_response)
-        expect(subject).to be_truthy
+        expect(subject).to be true
       end
     end
 
     context 'email address is not found on list' do
       it 'returns false' do
         stub_do_not_mail_list_exists(body: not_found_response)
-        expect(subject).to be_falsey
+        expect(subject).to be false
       end
     end
 
     context 'raises exception' do
       it 'returns false' do
         stub_do_not_mail_list_exists(status: 400)
-        expect(subject.errors).not_to be_empty
+        expect(subject).to be false
       end
     end
   end
@@ -34,18 +34,16 @@ describe Maropost::DoNotMailList do
     subject { Maropost::DoNotMailList.create(contact) }
 
     context 'successfully added to do not mail list' do
-      it 'no errors exist' do
+      it 'returns truthy' do
         stub_do_not_mail_list_create(status: 200)
-
-        expect(subject.errors).to be_empty
+        expect(subject).to be_truthy
       end
     end
 
     context 'raises exception' do
-      it 'adds errors to contact' do
+      it 'returns false' do
         stub_do_not_mail_list_create(status: 422)
-
-        expect(subject.errors).not_to be_empty
+        expect(subject).to be false
       end
     end
   end
@@ -54,16 +52,16 @@ describe Maropost::DoNotMailList do
     subject { Maropost::DoNotMailList.delete(contact) }
 
     context 'successfully added to do not mail list' do
-      it 'no errors exist' do
+      it 'returns truthy' do
         stub_do_not_mail_list_delete(status: 200)
-        expect(subject.errors).to be_empty
+        expect(subject).to be_truthy
       end
     end
 
     context 'raises exception' do
-      it 'adds errors to contact' do
+      it 'returns false' do
         stub_do_not_mail_list_delete(status: 422)
-        expect(subject.errors).not_to be_empty
+        expect(subject).to be false
       end
     end
   end

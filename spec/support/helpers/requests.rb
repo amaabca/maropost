@@ -42,7 +42,7 @@ module Helpers
     def stub_do_not_mail_list_exists(opts = {})
       status = opts.fetch(:status, 200)
       body = opts.fetch(:body) { '' }
-      email = opts.fetch(:email) { 'test@example.com' }
+      email = opts.fetch(:email) { 'test+001@test.com' }
       url = maropost_url(
         'global_unsubscribes/email.json',
         'contact[email]': email,
@@ -64,8 +64,8 @@ module Helpers
     end
 
     def stub_do_not_mail_list_delete(opts = {})
-      status = opts.fetch(:status, 200)
-      email = opts.fetch(:email) { 'test@example.com' }
+      status = opts.fetch(:status, 204)
+      email = opts.fetch(:email) { 'test+001@test.com' }
       url = maropost_url(
         'global_unsubscribes/delete.json',
         'email': email

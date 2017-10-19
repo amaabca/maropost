@@ -75,7 +75,7 @@ module Maropost
       end
 
       def update_do_not_mail_list(contact)
-        if contact.allow_emails? && contact.subscribed_to_any_lists?
+        if contact.allow_emails?
           DoNotMailList.delete(contact)
         else
           DoNotMailList.create(contact)
