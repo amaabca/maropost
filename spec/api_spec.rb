@@ -1,19 +1,28 @@
 # frozen_string_literal: true
 
 describe Maropost::Api do
+  let(:email) { 'test+001@test.com' }
+
+  before(:each) do
+    stub_do_not_mail_list_exists(
+      email: email,
+      body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
+    )
+  end
+
   describe 'find' do
     context 'contact exists on maropost' do
       let(:maropost_contact_response) { read_fixture('contacts', 'contact.json') }
 
       before(:each) do
         stub_find_maropost_contact(
-          email: maropost_contact_response['email'],
+          email: email,
           body: maropost_contact_response
         )
       end
 
       it 'returns maropost contact' do
-        contact = Maropost::Api.find(maropost_contact_response['email'])
+        contact = Maropost::Api.find(email)
         lists = contact.lists
         expected_contact = JSON.parse maropost_contact_response
         expect(contact.id).to eq expected_contact['id']
@@ -37,7 +46,6 @@ describe Maropost::Api do
     end
 
     context 'contact does not exist on maropost' do
-      let(:email) { 'test@test.com' }
       it 'returns nil' do
         stub_find_maropost_contact(email: email, status: 404)
 
@@ -49,29 +57,25 @@ describe Maropost::Api do
   end
 
   describe 'update subscription' do
-    let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com') }
-    let(:existing_contact) { Maropost::Contact.new(id: 741_000_000, email: 'test@test.com') }
+    let(:contact) { Maropost::Contact.new(id: nil, email: email) }
+    let(:existing_contact) { Maropost::Contact.new(id: 741_000_000, email: email) }
 
     subject { Maropost::Api.update_subscriptions(contact) }
 
     before(:each) do
       stub_find_maropost_contact(email: contact.email)
       stub_update_maropost_contact(contact_id: existing_contact.id)
-      stub_do_not_mail_list_exists(
-        email: 'test@test.com',
-        body: read_fixture('do_not_mail_list', 'do_not_mail_not_found.json')
-      )
     end
 
     context 'contact exists on maropost' do
       it 'calls update' do
-        stub_do_not_mail_list_create
+        stub_do_not_mail_list_delete
         subject
         expect(contact.id).to eq existing_contact.id
       end
 
       context 'subscribing to a list' do
-        let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1') }
+        let(:contact) { Maropost::Contact.new(id: nil, email: email, ama_rewards: '1') }
 
         it 'removes from do not mail list' do
           expect(Maropost::DoNotMailList).to receive(:delete).with(contact)
@@ -80,19 +84,12 @@ describe Maropost::Api do
       end
 
       context 'explicitly opting into the do not mail list' do
-        let(:contact) { Maropost::Contact.new(id: nil, email: 'test@test.com', ama_rewards: '1', do_not_contact: true) }
+        let(:contact) { Maropost::Contact.new(id: nil, email: email, ama_rewards: '1', allow_emails: false) }
 
         before(:each) do
           stub_do_not_mail_list_create
         end
 
-        it 'adds to do not mail list' do
-          expect(Maropost::DoNotMailList).to receive(:create).with(contact)
-          subject
-        end
-      end
-
-      context 'unsubscribing from all lists' do
         it 'adds to do not mail list' do
           expect(Maropost::DoNotMailList).to receive(:create).with(contact)
           subject
@@ -104,14 +101,14 @@ describe Maropost::Api do
       it 'calls create' do
         expect(Maropost::Api).to receive(:find).with(contact.email).and_return(nil)
         expect(Maropost::Api).to receive(:create).with(contact)
-        stub_do_not_mail_list_create
+        stub_do_not_mail_list_delete
         subject
       end
     end
   end
 
   describe 'update' do
-    subject { Maropost::Api.update(Maropost::Contact.new(id: 741_000_000)) }
+    subject { Maropost::Api.update(Maropost::Contact.new(id: 741_000_000, email: email)) }
 
     context 'is successful' do
       it 'updates the contact in maropost' do
@@ -129,7 +126,7 @@ describe Maropost::Api do
   end
 
   describe 'create' do
-    subject { Maropost::Api.create(Maropost::Contact.new(email: 'test@test.com')) }
+    subject { Maropost::Api.create(Maropost::Contact.new(email: email)) }
 
     context 'is successful' do
       it 'creates the contact in maropost' do

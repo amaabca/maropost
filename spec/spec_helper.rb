@@ -4,6 +4,7 @@ require 'simplecov'
 require 'rspec'
 require 'webmock/rspec'
 require 'maropost'
+require 'pry'
 
 gem_dir = Gem::Specification.find_by_name('maropost').gem_dir
 Dir[File.join(gem_dir, 'spec/support/**/*.rb')].each { |f| require f }

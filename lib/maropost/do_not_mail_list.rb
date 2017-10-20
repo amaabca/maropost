@@ -14,9 +14,8 @@ module Maropost
         )
         response = JSON.parse(service.execute!.body)
         response['id'].present?
-      rescue RestClient::ResourceNotFound, RestClient::BadRequest => e
-        contact.errors << "Unexpected error occurred. Error: #{e.message}"
-        contact
+      rescue RestClient::ResourceNotFound, RestClient::BadRequest
+        false
       end
 
       def create(contact)
@@ -27,10 +26,8 @@ module Maropost
           payload: payload
         )
         service.execute!
-        contact
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
-        contact.errors << "Unable to subscribe contact. Error: #{e.message}"
-        contact
+      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+        false
       end
 
       def delete(contact)
@@ -42,10 +39,8 @@ module Maropost
           }
         )
         service.execute!
-        contact
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest => e
-        contact.errors << "Unable to unsubscribe contact. Error: #{e.message}"
-        contact
+      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+        false
       end
     end
   end
