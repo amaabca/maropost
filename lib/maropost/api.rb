@@ -53,6 +53,16 @@ module Maropost
         contact
       end
 
+      def change_email(old_email, new_email)
+        contact = find(old_email)
+
+        if contact.present?
+          contact = update(Maropost::Contact.new({ id: contact.id, email: new_email }))
+        end
+
+        contact
+      end
+
       private
 
       def create_or_update_payload(contact)
