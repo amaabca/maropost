@@ -142,4 +142,42 @@ describe Maropost::Api do
       end
     end
   end
+
+  describe 'change email' do
+    subject { Maropost::Api.change_email(old_email, new_email) }
+
+    context 'contact exists' do
+      let(:maropost_contact) { JSON.parse read_fixture('contacts', 'contact.json') }
+      let(:email_updated_contact) { read_fixture('contacts', 'email_updated_contact.json') }
+
+      let(:old_email) { 'test+001@test.com' }
+      let(:new_email) { 'updated_email@example.com' }
+
+      before do
+        stub_find_maropost_contact(email: old_email, status: 200)
+        stub_do_not_mail_list_exists(email: old_email, status: 404)
+        stub_do_not_mail_list_exists(email: new_email, status: 404)
+        stub_update_maropost_contact(contact_id: 741_000_000, status: 200, body: email_updated_contact)
+      end
+
+      it 'returns updated contact' do
+        contact = subject
+
+        expect(contact.email).to eq new_email
+      end
+    end
+
+    context 'contact does not exist' do
+      let(:old_email) { 'non_existent_user@example.com' }
+      let(:new_email) { 'new_non_existent_user@example.com' }
+
+      before do
+        stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
 end
