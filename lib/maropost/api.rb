@@ -57,7 +57,8 @@ module Maropost
         contact = find(old_email)
 
         if contact.present?
-          contact = update(Maropost::Contact.new(id: contact.id, email: new_email))
+          contact.email = new_email
+          contact = update(contact)
         end
 
         contact
