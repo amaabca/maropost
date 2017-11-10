@@ -213,6 +213,7 @@ describe Maropost::Api do
           expect(updated_contact.email).to eq new_email
           expect(updated_contact.phone_number).to eq merged_contact['phone']
           expect(updated_contact.cell_phone_number).to eq merged_contact['cell_phone_number']
+          expect(updated_contact.allow_emails).to be_truthy
 
           expect(lists[:ama_rewards]).to eq merged_contact['ama_rewards']
           expect(lists[:ama_membership]).to eq merged_contact['ama_membership']
@@ -255,6 +256,7 @@ describe Maropost::Api do
           expect(contact.email).to eq new_email
           expect(contact.phone_number).to eq existing_contact['phone']
           expect(contact.cell_phone_number).to eq existing_contact['cell_phone_number']
+          expect(contact.allow_emails).to be_truthy
 
           expect(lists[:ama_rewards]).to eq existing_contact['ama_rewards']
           expect(lists[:ama_membership]).to eq existing_contact['ama_membership']
