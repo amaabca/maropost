@@ -54,20 +54,10 @@ module Maropost
       end
 
       def change_email(old_email, new_email)
-        contact = nil
         old_email_contact = find(old_email)
         new_email_contact = find(new_email)
 
-        if old_email_contact.present? && new_email_contact.present?
-          new_email_contact = new_email_contact.merge_settings(old_email_contact)
-          contact = update(new_email_contact)
-          Maropost::DoNotMailList.create(old_email_contact)
-        elsif old_email_contact.present?
-          old_email_contact.email = new_email
-          contact = update(old_email_contact)
-        elsif new_email_contact.present?
-          contact = update(new_email_contact)
-        end
+        contact = update_email(old_email_contact, new_email_contact, new_email)
 
         update_do_not_mail_list(contact) if contact
 
@@ -75,6 +65,23 @@ module Maropost
       end
 
       private
+
+      def update_email(old_contact, new_contact, new_email)
+        contact = nil
+
+        if old_contact.present? && new_contact.present?
+          new_contact = new_contact.merge_settings(old_contact)
+          contact = update(new_contact)
+          Maropost::DoNotMailList.create(old_contact)
+        elsif old_contact.present?
+          old_contact.email = new_email
+          contact = update(old_contact)
+        elsif new_contact.present?
+          contact = update(new_contact)
+        end
+
+        contact
+      end
 
       def create_or_update_payload(contact)
         {
