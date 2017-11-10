@@ -145,6 +145,7 @@ describe Maropost::Api do
 
   describe 'change email' do
     let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
+    let(:old_contact_maropost_response) { read_fixture('contacts', 'contact.json') }
 
     let(:old_email) { 'test+001@test.com' }
     let(:new_email) { 'test@example.com' }
@@ -153,7 +154,6 @@ describe Maropost::Api do
 
     context 'contact does not exist in maropost with the new email' do
       context 'maropost contact exists with old email' do
-        let(:maropost_contact) { JSON.parse read_fixture('contacts', 'contact.json') }
         let(:email_updated_contact) { read_fixture('contacts', 'email_updated_contact.json') }
 
         let(:new_email) { 'updated_email@example.com' }
@@ -191,7 +191,6 @@ describe Maropost::Api do
 
     context 'contact exists in maropost with the new email' do
       context 'maropost contact exists with old email' do
-        let(:old_contact_maropost_response) { read_fixture('contacts', 'contact.json') }
         let(:merged_contact_maropost_response) { read_fixture('contacts', 'merged_contact.json') }
 
         before do
