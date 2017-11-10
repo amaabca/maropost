@@ -69,6 +69,8 @@ module Maropost
           contact = update(new_email_contact)
         end
 
+        update_do_not_mail_list(contact) if contact
+
         contact
       end
 
