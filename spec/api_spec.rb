@@ -146,37 +146,130 @@ describe Maropost::Api do
   describe 'change email' do
     subject { Maropost::Api.change_email(old_email, new_email) }
 
-    context 'contact exists' do
-      let(:maropost_contact) { JSON.parse read_fixture('contacts', 'contact.json') }
-      let(:email_updated_contact) { read_fixture('contacts', 'email_updated_contact.json') }
+    context 'contact does not exist in maropost with the new email' do
+      context 'maropost contact exists with old email' do
+        let(:maropost_contact) { JSON.parse read_fixture('contacts', 'contact.json') }
+        let(:email_updated_contact) { read_fixture('contacts', 'email_updated_contact.json') }
 
-      let(:old_email) { 'test+001@test.com' }
-      let(:new_email) { 'updated_email@example.com' }
+        let(:old_email) { 'test+001@test.com' }
+        let(:new_email) { 'updated_email@example.com' }
 
-      before do
-        stub_find_maropost_contact(email: old_email, status: 200)
-        stub_do_not_mail_list_exists(email: old_email, status: 404)
-        stub_do_not_mail_list_exists(email: new_email, status: 404)
-        stub_update_maropost_contact(contact_id: 741_000_000, status: 200, body: email_updated_contact)
+        before do
+          stub_find_maropost_contact(email: old_email, status: 200)
+          stub_find_maropost_contact(email: new_email, status: 404)
+          stub_do_not_mail_list_exists(email: old_email, status: 404)
+          stub_do_not_mail_list_exists(email: new_email, status: 404)
+          stub_update_maropost_contact(contact_id: 741_000_000, status: 200, body: email_updated_contact)
+        end
+
+        it 'returns updated contact' do
+          contact = subject
+
+          expect(contact.email).to eq new_email
+        end
       end
 
-      it 'returns updated contact' do
-        contact = subject
+      context 'maropost contact does not exist with old email' do
+        let(:old_email) { 'non_existent_user@example.com' }
+        let(:new_email) { 'new_non_existent_user@example.com' }
 
-        expect(contact.email).to eq new_email
+        before do
+          stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
+          stub_find_maropost_contact(email: new_email, status: 404, body: '{"message": "Contact is not present!"}')
+        end
+
+        it 'returns nil' do
+          expect(subject).to be_nil
+        end
       end
     end
 
-    context 'contact does not exist' do
-      let(:old_email) { 'non_existent_user@example.com' }
-      let(:new_email) { 'new_non_existent_user@example.com' }
+    context 'contact exists in maropost with the new email' do
+      context 'maropost contact exists with old email' do
+        let(:old_contact_maropost_response) { read_fixture('contacts', 'contact.json') }
+        let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
+        let(:merged_contact_maropost_response) { read_fixture('contacts', 'merged_contact.json') }
 
-      before do
-        stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
+        let(:old_email) { 'test+001@test.com' }
+        let(:new_email) { 'test@example.com' }
+
+        before do
+          stub_find_maropost_contact(email: old_email, status: 200, body: old_contact_maropost_response)
+          stub_find_maropost_contact(email: new_email, status: 200, body: existing_contact_maropost_response)
+          stub_do_not_mail_list_exists(email: old_email, status: 404)
+          stub_do_not_mail_list_exists(email: new_email, status: 404)
+
+          stub_update_maropost_contact(contact_id: 888_000_000, status: 200, body: merged_contact_maropost_response)
+          stub_do_not_mail_list_create(email: old_email)
+        end
+
+        it 'applies old maropost contact settings to existing maropost contact' do
+          updated_contact = subject
+          lists = updated_contact.lists
+
+          merged_contact = JSON.parse merged_contact_maropost_response
+
+          expect(updated_contact.id).to eq merged_contact['id']
+          expect(updated_contact.email).to eq new_email
+          expect(updated_contact.phone_number).to eq merged_contact['phone']
+          expect(updated_contact.cell_phone_number).to eq merged_contact['cell_phone_number']
+
+          expect(lists[:ama_rewards]).to eq merged_contact['ama_rewards']
+          expect(lists[:ama_membership]).to eq merged_contact['ama_membership']
+          expect(lists[:ama_insurance]).to eq merged_contact['ama_insurance']
+          expect(lists[:ama_travel]).to eq merged_contact['ama_travel']
+          expect(lists[:ama_new_member_series]).to eq merged_contact['ama_new_member_series']
+          expect(lists[:ama_fleet_safety]).to eq merged_contact['ama_fleet_safety']
+          expect(lists[:ovrr_personal]).to eq merged_contact['ovrr_personal']
+          expect(lists[:ovrr_business]).to eq merged_contact['ovrr_business']
+          expect(lists[:ovrr_associate]).to eq merged_contact['ovrr_associate']
+          expect(lists[:ama_vr_reminder]).to eq merged_contact['ama_vr_reminder']
+          expect(lists[:ama_vr_reminder_email]).to eq merged_contact['ama_vr_reminder_email']
+          expect(lists[:ama_vr_reminder_sms]).to eq merged_contact['ama_vr_reminder_sms']
+          expect(lists[:ama_vr_reminder_autocall]).to eq merged_contact['ama_vr_reminder_autocall']
+        end
       end
 
-      it 'returns nil' do
-        expect(subject).to be_nil
+      context 'maropost contact does not exist with old email' do
+        let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
+
+        let(:old_email) { 'test+001@test.com' }
+        let(:new_email) { 'test@example.com' }
+
+        before do
+          stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
+          stub_find_maropost_contact(email: new_email, status: 200, body: existing_contact_maropost_response)
+
+          stub_do_not_mail_list_exists(email: new_email, status: 404)
+
+          stub_update_maropost_contact(contact_id: 888_000_000, status: 200, body: existing_contact_maropost_response)
+        end
+
+        it 'returns new email contact' do
+          contact = subject
+          lists = contact.lists
+
+          existing_contact = JSON.parse existing_contact_maropost_response
+
+          expect(contact.id).to eq existing_contact['id']
+          expect(contact.email).to eq new_email
+          expect(contact.phone_number).to eq existing_contact['phone']
+          expect(contact.cell_phone_number).to eq existing_contact['cell_phone_number']
+
+          expect(lists[:ama_rewards]).to eq existing_contact['ama_rewards']
+          expect(lists[:ama_membership]).to eq existing_contact['ama_membership']
+          expect(lists[:ama_insurance]).to eq existing_contact['ama_insurance']
+          expect(lists[:ama_travel]).to eq existing_contact['ama_travel']
+          expect(lists[:ama_new_member_series]).to eq existing_contact['ama_new_member_series']
+          expect(lists[:ama_fleet_safety]).to eq existing_contact['ama_fleet_safety']
+          expect(lists[:ovrr_personal]).to eq existing_contact['ovrr_personal']
+          expect(lists[:ovrr_business]).to eq existing_contact['ovrr_business']
+          expect(lists[:ovrr_associate]).to eq existing_contact['ovrr_associate']
+          expect(lists[:ama_vr_reminder]).to eq existing_contact['ama_vr_reminder']
+          expect(lists[:ama_vr_reminder_email]).to eq existing_contact['ama_vr_reminder_email']
+          expect(lists[:ama_vr_reminder_sms]).to eq existing_contact['ama_vr_reminder_sms']
+          expect(lists[:ama_vr_reminder_autocall]).to eq existing_contact['ama_vr_reminder_autocall']
+        end
       end
     end
   end

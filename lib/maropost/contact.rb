@@ -53,6 +53,16 @@ module Maropost
       { cell_phone_number: cell_phone_number }.merge(lists)
     end
 
+    def merge_settings(old_contact)
+      self.phone_number = old_contact.phone_number
+      self.cell_phone_number = old_contact.cell_phone_number
+      self.lists.each do |list|
+        lists[list] == '1' ? list : old_contact.lists[list]
+      end
+
+      self
+    end
+
     private
 
     def initialize_lists(opts = {})
