@@ -62,15 +62,14 @@ module Maropost
           new_email_contact = new_email_contact.merge_settings(old_email_contact)
           contact = update(new_email_contact)
           Maropost::DoNotMailList.create(old_email_contact)
-          update_do_not_mail_list(contact)
         elsif old_email_contact.present?
           old_email_contact.email = new_email
           contact = update(old_email_contact)
-          update_do_not_mail_list(contact)
         elsif new_email_contact.present?
           contact = update(new_email_contact)
-          update_do_not_mail_list(contact)
         end
+
+        update_do_not_mail_list(contact) if contact
 
         contact
       end
