@@ -144,6 +144,11 @@ describe Maropost::Api do
   end
 
   describe 'change email' do
+    let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
+
+    let(:old_email) { 'test+001@test.com' }
+    let(:new_email) { 'test@example.com' }
+
     subject { Maropost::Api.change_email(old_email, new_email) }
 
     context 'contact does not exist in maropost with the new email' do
@@ -151,7 +156,6 @@ describe Maropost::Api do
         let(:maropost_contact) { JSON.parse read_fixture('contacts', 'contact.json') }
         let(:email_updated_contact) { read_fixture('contacts', 'email_updated_contact.json') }
 
-        let(:old_email) { 'test+001@test.com' }
         let(:new_email) { 'updated_email@example.com' }
 
         before do
@@ -188,11 +192,7 @@ describe Maropost::Api do
     context 'contact exists in maropost with the new email' do
       context 'maropost contact exists with old email' do
         let(:old_contact_maropost_response) { read_fixture('contacts', 'contact.json') }
-        let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
         let(:merged_contact_maropost_response) { read_fixture('contacts', 'merged_contact.json') }
-
-        let(:old_email) { 'test+001@test.com' }
-        let(:new_email) { 'test@example.com' }
 
         before do
           stub_find_maropost_contact(email: old_email, status: 200, body: old_contact_maropost_response)
@@ -233,11 +233,6 @@ describe Maropost::Api do
       end
 
       context 'maropost contact does not exist with old email' do
-        let(:existing_contact_maropost_response) { read_fixture('contacts', 'other_existing_contact.json') }
-
-        let(:old_email) { 'test+001@test.com' }
-        let(:new_email) { 'test@example.com' }
-
         before do
           stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
           stub_find_maropost_contact(email: new_email, status: 200, body: existing_contact_maropost_response)
