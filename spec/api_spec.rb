@@ -199,9 +199,7 @@ describe Maropost::Api do
           stub_find_maropost_contact(email: new_email, status: 200, body: existing_contact_maropost_response)
           stub_do_not_mail_list_exists(email: old_email, status: 404)
           stub_do_not_mail_list_exists(email: new_email, status: 404)
-
           stub_update_maropost_contact(contact_id: 888_000_000, status: 200, body: merged_contact_maropost_response)
-          
           stub_do_not_mail_list_delete(email: new_email)
           stub_do_not_mail_list_create(email: old_email)
         end
@@ -243,11 +241,8 @@ describe Maropost::Api do
         before do
           stub_find_maropost_contact(email: old_email, status: 404, body: '{"message": "Contact is not present!"}')
           stub_find_maropost_contact(email: new_email, status: 200, body: existing_contact_maropost_response)
-
           stub_do_not_mail_list_exists(email: new_email, status: 404)
-
           stub_update_maropost_contact(contact_id: 888_000_000, status: 200, body: existing_contact_maropost_response)
-
           stub_do_not_mail_list_delete(email: new_email)
         end
 
