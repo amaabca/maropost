@@ -1,0 +1,20 @@
+{
+  "id": 888000000,
+  "email": "test@example.com",
+  "phone": "4444444444",
+  "ama_rewards": "0",
+  "ama_membership": "0",
+  "ama_insurance": "0",
+  "ama_travel": "0",
+  "ama_new_member_series": "0",
+  "ama_fleet_safety": "0",
+  "ovrr_personal": "Johnson",
+  "ovrr_associate": "James",
+  "ovrr_business": "Jimmy",
+  "ama_vr_reminder": "1",
+  "ama_vr_reminder_email": "1",
+  "ama_vr_reminder_sms": "1",
+  "ama_vr_reminder_autocall": "1",
+  "cell_phone_number": "8998889999",
+  "phone_number": "4444444444"
+}

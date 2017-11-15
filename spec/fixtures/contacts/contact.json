@@ -16,10 +16,11 @@
   "ovrr_personal": "Watson",
   "ovrr_associate": "Junior",
   "ovrr_business": "Macrocorp",
-  "ama_vr_reminder": "1",
-  "ama_vr_reminder_email": "1",
+  "ama_vr_reminder": "0",
+  "ama_vr_reminder_email": "0",
   "ama_vr_reminder_sms": "1",
   "ama_vr_reminder_autocall": "1",
+  "cell_phone_number": "3213213211",
   "city": null,
   "age": null,
   "postal_code": null,
@@ -103,7 +104,6 @@
   "member_card_holder": null,
   "lob_travel": null,
   "lob_insurance": null,
-  "cell_phone_number": "3213213211",
   "phone_number": null,
   "segment_number": null
 }
