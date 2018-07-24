@@ -84,6 +84,13 @@ module Maropost
       end
 
       def create_or_update_payload(contact)
+        payload(contact).tap do |p|
+          p[:contact][:first_name] = contact.try(:first_name) if contact.try(:first_name)
+          p[:contact][:last_name] = contact.try(:last_name) if contact.try(:last_name)
+        end
+      end
+
+      def payload(contact)
         {
           contact: {
             email: contact.email,

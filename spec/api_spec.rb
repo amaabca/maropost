@@ -125,6 +125,17 @@ describe Maropost::Api do
     end
   end
 
+  describe 'creates with first name and last name' do
+    subject { Maropost::Api.create(Maropost::Contact.new(email: email, first_name: 'Homer', last_name: 'Simpson')) }
+
+    context 'is successful' do
+      it 'creates the contact in maropost' do
+        stub_create_maropost_contact
+        expect(subject.errors).to be_empty
+      end
+    end
+  end
+
   describe 'create' do
     subject { Maropost::Api.create(Maropost::Contact.new(email: email)) }
 
