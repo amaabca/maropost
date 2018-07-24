@@ -94,7 +94,7 @@ module Maropost
       end
 
       def create_payload(contact)
-        update_payload(contact).merge(first_name: contact&.first_name, last_name: contact&.last_name)
+        update_payload(contact).merge(first_name: contact.try(:first_name), last_name: contact.try(:last_name))
       end
 
       def to_maropost(existing, contact)
