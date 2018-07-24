@@ -31,7 +31,7 @@ module Maropost
         service = Service.new(
           method: :post,
           path: 'contacts.json',
-          payload: create_payload(contact)
+          payload: create_or_update_payload(contact)
         )
         response = JSON.parse(service.execute!.body)
         Maropost::Contact.new(response)
@@ -44,7 +44,7 @@ module Maropost
         service = Service.new(
           method: :put,
           path: "contacts/#{contact.id}.json",
-          payload: update_payload(contact)
+          payload: create_or_update_payload(contact)
         )
         response = JSON.parse(service.execute!.body)
         Maropost::Contact.new(response)
@@ -83,7 +83,14 @@ module Maropost
         contact
       end
 
-      def update_payload(contact)
+      def create_or_update_payload(contact)
+        payload(contact).tap do |p|
+          p.merge(first_name: contact.try(:first_name)) if contact.try(:first_name)
+          p.merge(last_name: contact.try(:last_name)) if contact.try(:last_name)
+        end
+      end
+
+      def payload(contact)
         {
           contact: {
             email: contact.email,
@@ -91,10 +98,6 @@ module Maropost
             custom_field: contact.list_parameters
           }
         }
-      end
-
-      def create_payload(contact)
-        update_payload(contact).merge(first_name: contact.try(:first_name), last_name: contact.try(:last_name))
       end
 
       def to_maropost(existing, contact)
