@@ -85,8 +85,8 @@ module Maropost
 
       def create_or_update_payload(contact)
         payload(contact).tap do |p|
-          p.merge(first_name: contact.try(:first_name)) if contact.try(:first_name)
-          p.merge(last_name: contact.try(:last_name)) if contact.try(:last_name)
+          p[:contact][:first_name] = contact.try(:first_name) if contact.try(:first_name)
+          p[:contact][:last_name] = contact.try(:last_name) if contact.try(:last_name)
         end
       end
 

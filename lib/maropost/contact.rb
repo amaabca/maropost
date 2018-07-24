@@ -36,6 +36,8 @@ module Maropost
       self.id = data[:id]
       self.email = data[:email]
       self.phone_number = data[:phone]
+      self.first_name = data[:first_name]
+      self.last_name = data[:last_name]
       self.cell_phone_number = data[:cell_phone_number]
       self.allow_emails = data.fetch(:allow_emails) { !DoNotMailList.exists?(self) }
       self.errors = []
