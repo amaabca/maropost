@@ -7,6 +7,8 @@ module Maropost
       id
       email
       phone_number
+      first_name
+      last_name
       cell_phone_number
       lists
       errors
