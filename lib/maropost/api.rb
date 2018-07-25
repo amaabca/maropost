@@ -95,7 +95,7 @@ module Maropost
           contact: {
             email: contact.email,
             phone: contact.phone_number,
-            custom_field: contact.list_parameters
+            custom_field: contact.custom_parameters
           }
         }
       end
