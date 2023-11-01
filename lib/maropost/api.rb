@@ -15,7 +15,7 @@ module Maropost
         )
         response = JSON.parse(service.execute!.body)
         Maropost::Contact.new(response)
-      rescue RestClient::ResourceNotFound
+      rescue RestClient::Exception
         nil
       end
 
@@ -35,7 +35,7 @@ module Maropost
         )
         response = JSON.parse(service.execute!.body)
         Maropost::Contact.new(response)
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+      rescue RestClient::Exception
         contact.errors << 'Unable to create or update contact'
         contact
       end
@@ -48,7 +48,7 @@ module Maropost
         )
         response = JSON.parse(service.execute!.body)
         Maropost::Contact.new(response)
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+      rescue RestClient::Exception
         contact.errors << 'Unable to update contact'
         contact
       end

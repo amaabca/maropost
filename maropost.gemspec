@@ -11,30 +11,16 @@ Gem::Specification.new do |spec|
   spec.authors = [
     'Michael van den Beuken',
     'Ruben Estevez',
-    'Jordan Babe',
-    'Ryan Jones',
     'Darko Dosenovic',
-    'Jonathan Weyermann',
-    'Kayt Campbell',
-    'Jesse Doyle',
     'Zoie Carnegie',
-    'Sinead Errity',
-    'Serene Yew',
-    'Martin Echtner'
+    'Sinead Errity'
   ]
   spec.email = [
     'michael.beuken@gmail.com',
     'ruben.a.estevez@gmail.com',
-    'jorbabe@gmail.com',
-    'ryan.michael.jones@gmail.com',
     'darko.dosenovic@ama.ab.ca',
-    'jonathan.weyermann@ama.ab.ca',
-    'kayt.campbell@ama.ab.ca',
-    'jdoyle@ualberta.ca',
     'zoie.carnegie@ama.ab.ca',
-    'sinead.errity@ama.ab.ca',
-    'serene.yew@ama.ab.ca',
-    'martin.echtner@ama.ab.ca'
+    'sinead.errity@ama.ab.ca'
   ]
   spec.summary = 'Interact with the Maropost API'
   spec.description = 'Interact with the Maropost API'
