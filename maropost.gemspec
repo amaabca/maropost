@@ -13,14 +13,24 @@ Gem::Specification.new do |spec|
     'Ruben Estevez',
     'Darko Dosenovic',
     'Zoie Carnegie',
-    'Sinead Errity'
+    'Sinead Errity',
+    'David Dowie',
+    'Anneliese Ansorger',
+    'Barb Smerekova',
+    'Volodymyr Rykhliuk',
+    'Winnie Ho'
   ]
   spec.email = [
     'michael.beuken@gmail.com',
     'ruben.a.estevez@gmail.com',
     'darko.dosenovic@ama.ab.ca',
     'zoie.carnegie@ama.ab.ca',
-    'sinead.errity@ama.ab.ca'
+    'sinead.errity@ama.ab.ca',
+    'david.dowie@ama.ab.ca',
+    'anneliese.ansorger@ama.ab.ca',
+    'barb.smerekova@ama.ab.ca',
+    'volodymyr.rykhliuk@ama.ab.ca',
+    'winnie.ho@ama.ab.ca'
   ]
   spec.summary = 'Interact with the Maropost API'
   spec.description = 'Interact with the Maropost API'
