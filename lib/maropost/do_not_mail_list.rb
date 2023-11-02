@@ -14,7 +14,7 @@ module Maropost
         )
         response = JSON.parse(service.execute!.body)
         response['id'].present?
-      rescue RestClient::ResourceNotFound, RestClient::BadRequest
+      rescue RestClient::Exception
         false
       end
 
@@ -26,7 +26,7 @@ module Maropost
           payload: payload
         )
         service.execute!
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+      rescue RestClient::Exception
         false
       end
 
@@ -39,7 +39,7 @@ module Maropost
           }
         )
         service.execute!
-      rescue RestClient::UnprocessableEntity, RestClient::BadRequest
+      rescue RestClient::Exception
         false
       end
     end
