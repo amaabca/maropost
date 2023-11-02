@@ -10,20 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.7
-      uses: actions/setup-ruby@v1
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
-    - name: Install Bundler
-      run:  gem install bundler
-    # - name: Setup Private SSH Key
-    #   uses: webfactory/ssh-agent@v0.5.2
-    #   with:
-    #     ssh-private-key: ${{ secrets.AMADEPLOY_SSH_PRIVATE_KEY }}
-    - name: Install Ruby Dependencies
-      run: |
-        bundle --version
-        bundle install --jobs 4 --retry 3
-    - name: Run Tests
-      run: bundle exec rake
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - run: bundle exec rake
