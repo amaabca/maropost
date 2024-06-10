@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
     'David Dowie',
     'Anneliese Ansorger',
     'Barb Smerekova',
-    'Volodymyr Rykhliuk',
     'Winnie Ho'
   ]
   spec.email = [
@@ -29,7 +28,6 @@ Gem::Specification.new do |spec|
     'david.dowie@ama.ab.ca',
     'anneliese.ansorger@ama.ab.ca',
     'barb.smerekova@ama.ab.ca',
-    'volodymyr.rykhliuk@ama.ab.ca',
     'winnie.ho@ama.ab.ca'
   ]
   spec.summary = 'Interact with the Maropost API'
